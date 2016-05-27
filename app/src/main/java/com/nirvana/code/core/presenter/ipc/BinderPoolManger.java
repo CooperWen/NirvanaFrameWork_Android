@@ -1,4 +1,4 @@
-package com.nirvana.code.core.ipc;
+package com.nirvana.code.core.presenter.ipc;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -69,7 +69,7 @@ public class BinderPoolManger {
 
     public synchronized void connectBinderService(){
         mCountDownLatch=new CountDownLatch(1);
-        Intent intent=new Intent(mContext,BinderService.class);
+        Intent intent=new Intent(mContext, BinderService.class);
         mContext.bindService(intent,mBinderServiceConnection,Context.BIND_AUTO_CREATE);
         try {
             mCountDownLatch.await();

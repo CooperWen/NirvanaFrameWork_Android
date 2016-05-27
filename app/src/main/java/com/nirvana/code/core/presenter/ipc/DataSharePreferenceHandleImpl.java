@@ -1,4 +1,4 @@
-package com.nirvana.code.core.ipc;
+package com.nirvana.code.core.presenter.ipc;
 
 import android.os.RemoteException;
 
