@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.nirvana.code.test.TestDefinedView;
+
 public class Splash extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -93,7 +95,8 @@ public class Splash extends AppCompatActivity
             Intent intent=new Intent(Splash.this,WebViewActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-
+            Intent intent=new Intent(Splash.this, TestDefinedView.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
