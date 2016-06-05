@@ -3,24 +3,29 @@ package com.nirvana.code;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.nirvana.code.core.view.NVWebView;
 
 public class WebViewActivity extends AppCompatActivity {
 
-    private WebView webView;
-    private RelativeLayout mRootView;
+    private NVWebView webView;
+    private ViewGroup mRootView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
-        mRootView=(RelativeLayout)findViewById(R.id.root_view);
-        webView=(WebView) findViewById(R.id.webview);
+        webView=(NVWebView) findViewById(R.id.webview);
+        mRootView=(ViewGroup) findViewById(R.id.root_view);
         webView.getSettings().setJavaScriptEnabled(true);
 //        webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl("http://fashion.sohu.com/upload/520lovego/p03_sh/index.html");
+        webView.loadUrl("http://blog.csdn.net/gebitan505/article/details/27681453");
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -29,7 +34,18 @@ public class WebViewActivity extends AppCompatActivity {
                 view.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+//                int webviewContentHeight=webView.getContentHeight();
+//                ViewGroup.LayoutParams layoutParams=webView.getLayoutParams();
+//                layoutParams.height=webviewContentHeight;
+//                webView.setLayoutParams(layoutParams);
+//                Toast.makeText(getApplicationContext(),"webview height="+webviewContentHeight,Toast.LENGTH_SHORT).show();
+            }
         });
+
 
     }
 
