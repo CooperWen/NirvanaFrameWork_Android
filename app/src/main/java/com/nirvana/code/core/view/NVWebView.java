@@ -36,68 +36,73 @@ public class NVWebView extends WebView implements VerticalLinearLayout.OnPageCha
     public boolean mIntercept=false;
     public boolean isUp=false;
     boolean isBottom;
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+////
 //
-
-
-
-//        Log.d("NVWebview","getY="+event.getY()+",mlastY"+mlastY);
-//        if (getY()-mlastY>100){
-//            mlastY=event.getY();
-//            return false;
+//
+//
+//
+////        Log.d("NVWebview","getY="+event.getY()+",mlastY"+mlastY);
+////        if (getY()-mlastY>100){
+////            mlastY=event.getY();
+////            return false;
+////        }
+////        mIntercept=true;
+//
+//        final int action = event.getAction();
+//        switch(action & MotionEvent.ACTION_MASK){
+//            case MotionEvent.ACTION_DOWN:
+//                mlastY = event.getY();
+////                if (isBottom)
+////                return false;
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//
+//                final int y = (int )event.getY();
+//
+//                if((y -mlastY)>50) { // 向下
+//
+//                    Log.d("NV","向下滑");
+//                    isUp=false;
+//                }else{ // 向上
+//                    Log.d("NV","向上滑");
+//                    isUp=true;
+//                    if (getContentHeight()* getScale() -( getHeight()+ getScrollY())==0){//webview已经滑动到底部
+//                        Log.d("NV","滑到低部了");
+////                        Toast.makeText(getContext(),"滑到底部了",Toast.LENGTH_SHORT).show();
+////                         requestDisallowInterceptTouchEvent(true);
+//                        isBottom=true;
+////                        mIntercept=false;
+////                        return mIntercept;
+//                    }else {
+////                    getParent().requestDisallowInterceptTouchEvent(true);
+//                        isBottom=false;
+//                    }
+//
+//               }
+//                mlastY = event.getY();
+//                break;
+//
+//            case MotionEvent.ACTION_UP:
+//
+//                mlastY = event.getY();
+//                break;
+//
 //        }
-//        mIntercept=true;
-
-        final int action = event.getAction();
-        switch(action & MotionEvent.ACTION_MASK){
-            case MotionEvent.ACTION_DOWN:
-                mlastY = event.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-
-                final int y = (int )event.getY();
-
-                if(y > mlastY) { // 向下
-
-                    Log.d("NV","向下滑");
-                    isUp=false;
-                }else{ // 向上
-                    Log.d("NV","向上滑");
-                    isUp=true;
-                    if (getContentHeight()* getScale() -( getHeight()+ getScrollY())==0){//webview已经滑动到底部
-                        Toast.makeText(getContext(),"滑到底部了",Toast.LENGTH_SHORT).show();
-                         requestDisallowInterceptTouchEvent(true);
-                        isBottom=true;
-//                        mIntercept=false;
-//                        return mIntercept;
-                    }else {
-                        isBottom=false;
-                    }
-
-               }
-                mlastY = event.getY();
-                break;
-
-            case MotionEvent.ACTION_UP:
-
-                mlastY = event.getY();
-                break;
-
-        }
-        if (isUp && isBottom){
-            Log.d("NV2","isUp="+isUp+",isBottom="+isBottom);
-            return false;
-        }
-        Log.d("NV","isUp="+isUp+",isBottom="+isBottom);
-        return super.onTouchEvent(event);
-    }
+////        if (isUp && isBottom){
+////            Log.d("NV2","isUp="+isUp+",isBottom="+isBottom);
+////            return false;
+////        }
+//        Log.d("NV","isUp="+isUp+",isBottom="+isBottom);
+//        return super.onTouchEvent(event);
+//    }
 
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        getParent().requestDisallowInterceptTouchEvent(true);
-        return super.dispatchTouchEvent(ev);
+    public void reset(){
+//        isUp=false;
+//        isBottom=false;
+        Log.d("NV","reset");
     }
 
     @Override

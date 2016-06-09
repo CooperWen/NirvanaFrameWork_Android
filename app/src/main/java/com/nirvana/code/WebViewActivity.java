@@ -26,6 +26,7 @@ public class WebViewActivity extends AppCompatActivity {
         webView.getSettings().setJavaScriptEnabled(true);
 //        webView.setWebChromeClient(new WebChromeClient());
         webView.loadUrl("http://blog.csdn.net/gebitan505/article/details/27681453");
+        webView.setLongClickable(false);
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

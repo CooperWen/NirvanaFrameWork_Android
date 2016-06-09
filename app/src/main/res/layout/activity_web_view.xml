@@ -22,7 +22,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/huajiao3" >
+        android:background="@android:color/holo_green_dark" >
 
         <Button
             android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/huajiao4" >
+        android:background="@android:color/holo_red_light" >
 
         <Button
             android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/huajiao1" >
+        android:background="@android:color/darker_gray" >
 
         <Button
             android:layout_width="wrap_content"

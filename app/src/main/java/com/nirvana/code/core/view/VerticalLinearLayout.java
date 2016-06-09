@@ -2,7 +2,6 @@ package com.nirvana.code.core.view;
 
 
 import android.content.Context;
-import android.sax.RootElement;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -53,6 +52,12 @@ public class VerticalLinearLayout extends ViewGroup {
     private int currentPage = 0;
 
     private OnPageChangeListener mOnPageChangeListener;
+
+    //added by kris 2016-06-08 14:55:43
+    private int lastInterceptX;
+    private int lastInterceptY;
+    private int lastX;
+    private int lastY;
 
     public VerticalLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -112,12 +117,14 @@ public class VerticalLinearLayout extends ViewGroup {
         obtainVelocity(event);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-
+                Log.d("VL","onTouchEvent DOWN");
                 mScrollStart = getScrollY();
                 mLastY = y;
+
                 break;
             case MotionEvent.ACTION_MOVE:
 
+                Log.d("VL","onTouchEvent MOVE");
                 if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
                 }
@@ -139,14 +146,14 @@ public class VerticalLinearLayout extends ViewGroup {
                 break;
             case MotionEvent.ACTION_UP:
 
+                Log.d("VL","onTouchEvent UP");
                 mScrollEnd = getScrollY();
-                boolean isUP=false;
 
                 int dScrollY = mScrollEnd - mScrollStart;
 
                 if (wantScrollToNext())// 往上滑动
                 {
-                    isUP=true;
+                    Log.d("VL","往上滑动");
                     if (shouldScrollToNext()) {
                         mScroller.startScroll(0, getScrollY(), 0, mScreenHeight - dScrollY);
 
@@ -158,17 +165,13 @@ public class VerticalLinearLayout extends ViewGroup {
 
                 if (wantScrollToPre())// 往下滑动
                 {
-                    isUP=false;
+                    Log.d("VL","往下滑动");
                     if (shouldScrollToPre()) {
                         mScroller.startScroll(0, getScrollY(), 0, -mScreenHeight - dScrollY);
 
                     } else {
                         mScroller.startScroll(0, getScrollY(), 0, -dScrollY);
                     }
-                }
-                if (getChildAt(0) instanceof NVWebView){
-                    NVWebView nvWebView=(NVWebView) getChildAt(0);
-                    nvWebView.isUp=isUP;
                 }
                 isScrolling = true;
                 postInvalidate();
@@ -230,6 +233,7 @@ public class VerticalLinearLayout extends ViewGroup {
                 if (mOnPageChangeListener != null) {
                     currentPage = position;
                     mOnPageChangeListener.onPageChange(currentPage);
+
                 }
             }
 
@@ -282,8 +286,6 @@ public class VerticalLinearLayout extends ViewGroup {
 
     /**
      * 回调接口
-     *
-     * @author zhy
      */
     public interface OnPageChangeListener {
         void onPageChange(int currentPage);
@@ -294,12 +296,103 @@ public class VerticalLinearLayout extends ViewGroup {
         super.onScrollChanged(l, t, oldl, oldt);
     }
 
+
+    /**
+     * 外部拦截法
+     *
+     * 考虑一种情况，假设事件交由子元素来处理，如果父容器在ACTION_UP时返回了true，就会导致子元素无法接收到ACTION_UP事件，
+     * 这个时候子元素中的onclick事件就无法触发，但是父容器比较特殊，一旦它开始拦截任何一个事件，那么后续的事件都会交给它来处理，
+     * 而ACTION_UP作为最后一个事件也必定可以传递给父容器即便父容器的onInterceptTouchEvent在ACTION_UP时返回了false。
+     *
+     * @param event
+     * @return
+     */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (currentPage==0){
-            return false;
+        //处理滑动冲突,也就是什么时候返回true的问题
+        //规则:开始滑动时水平距离超过垂直距离的时候
+        boolean intercept = false;
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+        switch (event.getAction()) {
+            //ACTION_DOWN这个事件，父容器必须返回false，即不拦截ACTION_DOWN事件，那么后续的ACTION_MOVE,ACTION_UP事件都会直接交由父容器处理，这个时候事件无法再传递给子元素了。
+            case MotionEvent.ACTION_DOWN: //DOWN返回false,导致onTouchEvent中无法获取到DOWN
+                intercept = false;
+                Log.d("HV", "Intercept.DOWN");
+
+                if (!mScroller.isFinished()) { //如果动画还没有执行完成,则打断,这种情况肯定还是由父组件处理触摸事件所以返回true
+                    mScroller.abortAnimation();
+                    intercept = true;
+                }
+
+                Log.d("HV", "Intercept.DOWN intercept="+intercept);
+                break;
+            //只有ACTION_MOVE可以根据需求来决定是否需要拦截
+            case MotionEvent.ACTION_MOVE:
+                Log.d("HV", "Intercept.MOVE");
+                int deltaX = x - lastInterceptX;
+                int deltaY = y - lastInterceptY;
+//                if (Math.abs(deltaX) - Math.abs(deltaY) > 0) { //水平方向距离长  MOVE中返回true一次,后续的MOVE和UP都不会收到此请求
+//                    intercept = true;
+//                    Log.d("HV", "intercepted");
+//                } else {
+//                    intercept = false;
+//                    if (currentPage==0){
+//                        if (getChildAt(0) instanceof NVWebView){
+//                            NVWebView nvWebView=(NVWebView) getChildAt(0);
+//                            if (nvWebView.isUp && nvWebView.isBottom){
+////                                intercept = true;
+//                            }
+//                            Log.d("VL","isUp up="+nvWebView.isUp);
+//                        }
+//                    }
+//
+//                }
+                /*
+                 1.向下滑动，并且isBottom则拦截
+                 */
+                Log.d("VL","deltaY="+deltaY);
+                if(deltaY<-20 ) {//向上滑
+                    Log.d("VL","向上滑了");
+                    if (currentPage==0){
+                        if (getChildAt(0) instanceof NVWebView){
+                            NVWebView nvWebView=(NVWebView) getChildAt(0);
+                            boolean isBottom;
+                            if (nvWebView.getContentHeight()* nvWebView.getScale() -( nvWebView.getHeight()+nvWebView.getScrollY())==0){//webview已经滑动到底部
+                                Log.d("NV","滑到低部了");
+                                isBottom=true;
+                            }else {
+                                isBottom=false;
+                            }
+                            if ( isBottom){
+                                //begin  return true的时候，onTouch的DOWN不执行，因此需要在这儿重新赋值
+                                mScrollStart = getScrollY();
+                                mLastY = y;
+                                //end
+                                intercept = true;
+                            }
+                            Log.d("VL","向上滑了，intercept"+intercept);
+                        }
+                    }
+                }else {
+                    intercept = false;
+                }
+
+
+                break;
+            //必须返回false,因为ACTION_UP事件本身没有太多意义
+            case MotionEvent.ACTION_UP:
+                Log.d("HV", "Intercept.UP");
+                intercept = false;
+
+                break;
         }
-        return super.onInterceptTouchEvent(event);
+        //因为DOWN返回true,所以onTouchEvent中无法获取DOWN事件,所以这里要负责设置lastX,lastY
+        lastX = x;
+        lastY = y;
+        lastInterceptX = x; //因为先经过的DOWN,所以在MOVE的时候,这两个值已经有了
+        lastInterceptY = y;
+        return intercept;
     }
 
     @Override
