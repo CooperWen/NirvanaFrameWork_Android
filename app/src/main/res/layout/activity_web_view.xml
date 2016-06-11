@@ -22,14 +22,17 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@android:color/holo_green_dark" >
+        android:background="@android:color/white" >
 
-        <Button
-            android:layout_width="wrap_content"
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="#fff"
-            android:text="hello" />
+            android:layout_margin="10dp"
+            android:paddingLeft="1dp"
+            android:paddingBottom="1dp"
+            android:background="@drawable/layer_list_input_drawable"
+            android:hint="请留言"/>
+
     </RelativeLayout>
 
     <RelativeLayout
