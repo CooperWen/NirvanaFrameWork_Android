@@ -1,9 +1,26 @@
 apply plugin: 'com.android.application'
-
+repositories {
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+}
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
+    sourceSets {
+        main {
+//            manifest.srcFile 'AndroidManifest.xml'
+//            java.srcDirs = ['src']
+//            resources.srcDirs = ['src']
+//            aidl.srcDirs = ['src']
+//            renderscript.srcDirs = ['src']
+//            res.srcDirs = ['res']
+//            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     defaultConfig {
         applicationId "com.nirvana.code"
         minSdkVersion 15
@@ -17,6 +34,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+//    dependencies {
+//        compile(name: 'SohuFramework_android-debug', ext: 'aar')
+//    }
 }
 
 dependencies {

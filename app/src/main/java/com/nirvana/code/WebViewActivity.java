@@ -2,6 +2,7 @@ package com.nirvana.code;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.sohu.framework.net.KCError;
+import com.sohu.framework.net.KCListener;
+import com.sohu.framework.net.KCRequestMgr;
 
 import com.nirvana.code.core.view.NVWebView;
 
@@ -21,6 +26,20 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
+//        KCRequestMgr mKcRequestMgr = KCRequestMgr.getKCRequestMgr(getBaseContext());
+////        url = appendCommonParameters(url);
+//        mKcRequestMgr.getRequest("https://www.baidu.com", new KCListener.Listener<String>() {
+//            @Override
+//            public void onDataReturned(String s, String s2) {
+//                Log.d("WebViewActivity",s+",s2="+s2);
+//            }
+//
+//            @Override
+//            public void onRequestError(String s, KCError kcError) {
+//
+//                Log.d("WebViewActivity","onRequestError: "+s+",kcError="+kcError);
+//            }
+//        });
         webView=(NVWebView) findViewById(R.id.webview);
         mRootView=(ViewGroup) findViewById(R.id.root_view);
         webView.getSettings().setJavaScriptEnabled(true);
