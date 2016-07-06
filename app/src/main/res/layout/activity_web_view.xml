@@ -14,49 +14,50 @@
 
         <com.nirvana.code.core.view.NVWebView
             android:id="@+id/webview"
+            android:layout_marginTop="200dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
              />
     <!--</RelativeLayout>-->
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/white" >
+    <!--<RelativeLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="@android:color/white" >-->
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:paddingLeft="1dp"
-            android:paddingBottom="1dp"
-            android:background="@drawable/layer_list_input_drawable"
-            android:hint="请留言"/>
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:paddingLeft="1dp"-->
+            <!--android:paddingBottom="1dp"-->
+            <!--android:background="@drawable/layer_list_input_drawable"-->
+            <!--android:hint="请留言"/>-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/holo_red_light" >
+    <!--<RelativeLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="@android:color/holo_red_light" >-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="hello" />
-    </RelativeLayout>
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:text="hello" />-->
+    <!--</RelativeLayout>-->
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@android:color/darker_gray" >
+    <!--<RelativeLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:background="@android:color/darker_gray" >-->
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="hello" />
-    </RelativeLayout>
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:text="hello" />-->
+    <!--</RelativeLayout>-->
 
 </com.nirvana.code.core.view.VerticalLinearLayout>

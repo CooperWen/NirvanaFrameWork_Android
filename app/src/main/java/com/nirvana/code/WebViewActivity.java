@@ -1,30 +1,29 @@
 package com.nirvana.code;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.sohu.framework.net.KCError;
-import com.sohu.framework.net.KCListener;
-import com.sohu.framework.net.KCRequestMgr;
-
 import com.nirvana.code.core.view.NVWebView;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends Activity {
 
     private NVWebView webView;
     private ViewGroup mRootView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_web_view);
 //        KCRequestMgr mKcRequestMgr = KCRequestMgr.getKCRequestMgr(getBaseContext());
 ////        url = appendCommonParameters(url);
@@ -44,7 +43,7 @@ public class WebViewActivity extends AppCompatActivity {
         mRootView=(ViewGroup) findViewById(R.id.root_view);
         webView.getSettings().setJavaScriptEnabled(true);
 //        webView.setWebChromeClient(new WebChromeClient());
-        webView.loadUrl("http://blog.csdn.net/gebitan505/article/details/27681453");
+        webView.loadUrl("http:/www.haowuyun.com/mblog/index");
         webView.setLongClickable(false);
         webView.setWebViewClient(new WebViewClient(){
             @Override
