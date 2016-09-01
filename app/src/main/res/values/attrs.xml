@@ -14,4 +14,13 @@
             <enum name="FILL" value="1"></enum>
         </attr>
     </declare-styleable>
+
+    <!--粒子动画样式-->
+    <declare-styleable name="ParticleView">
+        <attr name="pv_host_text" format="string"></attr>
+        <attr name="pv_particle_text" format="string"></attr>
+        <attr name="pv_particle_text_size" format="dimension"></attr>
+        <attr name="pv_text_color" format="color"></attr>
+        <attr name="pv_background_color" format="color"></attr>
+    </declare-styleable>
 </resources>

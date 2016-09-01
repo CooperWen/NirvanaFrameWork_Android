@@ -37,6 +37,7 @@ public class Splash extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +73,7 @@ public class Splash extends AppCompatActivity
                 }
             }
         });
-        webView.loadUrl("http:/www.haowuyun.com/mblog/index");
+        webView.loadUrl("http:/www.haowuyun.com/index");
         webView.setLongClickable(false);
         webView.setWebViewClient(new WebViewClient(){
             @Override
@@ -147,24 +148,45 @@ public class Splash extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        String url="";
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-            Intent intent=new Intent(Splash.this,WebViewActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_send) {
-            Intent intent=new Intent(Splash.this, TestDefinedView.class);
-            startActivity(intent);
+        switch (id){
+            case R.id.nav_camera:
+                url="http://www.haowuyun.com";
+                break;
+            case R.id.nav_gallery:
+                url="http://www.haowuyun.com/gallery?g=2";
+                break;
+            case R.id.nav_slideshow:
+                url="http://www.haowuyun.com/g/video";
+                break;
+            case R.id.nav_manage:
+                url="http://www.haowuyun.com/about";
+                break;
+            case R.id.nav_android:
+                url="http://www.haowuyun.com/tag/Android/";
+                break;
+            case R.id.nav_java:
+                url="http://www.haowuyun.com/tag/java/";
+                break;
+            case R.id.nav_js:
+                url="http://www.haowuyun.com/tag/JavaScript/";
+                break;
+            case R.id.nav_ask:
+                url="http://www.haowuyun.com/g/ask";
+                break;
+            case R.id.nav_h5:
+                url="http://www.haowuyun.com/tag/Html5/";
+                break;
+            case R.id.nav_lover:
+                url="http://www.haowuyun.com/tag/%E4%BA%B2%E5%AD%90/";
+                break;
         }
 
+        Intent intent=new Intent(Splash.this,WebViewActivity.class);
+        intent.putExtra("url",url);
+        startActivity(intent);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
