@@ -38,6 +38,7 @@ import com.umeng.socialize.media.UMusic;
 import com.umeng.socialize.shareboard.ShareBoardConfig;
 import com.umeng.socialize.shareboard.SnsPlatform;
 import com.umeng.socialize.utils.Log;
+import com.umeng.socialize.utils.ShareBoardlistener;
 import com.umeng.socialize.utils.SocializeUtils;
 
 import java.io.File;
@@ -502,6 +503,17 @@ public class Splash extends AppCompatActivity
                     .withText(webView.getTitle())
                     .withTitle("LoveInLog分享")
                     .withTargetUrl(webView.getOriginalUrl())
+                    .setShareboardclickCallback(new ShareBoardlistener() {
+                        @Override
+                        public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
+                            if (share_media==SHARE_MEDIA.QZONE){
+                                mShareAction.withMedia(imagelocal);
+
+                            }
+                            mShareAction.setPlatform(share_media);
+                            mShareAction.share();
+                        }
+                    })
                     .setCallback(mShareListener);
 //            mShareAction=new ShareAction(this).setDisplayList(
 //                    SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
