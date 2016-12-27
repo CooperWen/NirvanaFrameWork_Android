@@ -27,7 +27,7 @@ public class NivanaApplication extends Application implements Thread.UncaughtExc
     }
     //各个平台的配置，建议放在全局Application或者程序入口
     {
-        PlatformConfig.setWeixin("wx967daebe835fbeac", "5bb696d9ccd75a38c8a0bfe0675559b3");
+        PlatformConfig.setWeixin("wx1ad4e33fd06e3224", "f3cc055488ccef494143b4f71b266dcf");
         PlatformConfig.setQQZone("1105908768", "v4zcQAwcjOYFZEON");
         //微信 wx12342956d1cab4f9,a5ae111de7d9ea137e88a5e02c07c94d
         //豆瓣RENREN平台目前只能在服务器端配置

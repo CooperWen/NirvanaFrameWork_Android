@@ -309,17 +309,17 @@ public class Splash extends AppCompatActivity
     }
     private void initMedia(){
         imageurl = new UMImage(this,Defaultcontent.imageurl);
-        imageurl.setThumb(new UMImage(this, "http://www.haowuyun.com/assets/images/haowuicon.png"));
-        imagelocal = new UMImage(this,"http://www.haowuyun.com/assets/images/haowuicon.png");
-        imagelocal.setThumb(new UMImage(this, "http://www.haowuyun.com/assets/images/haowuicon.png"));
+        imageurl.setThumb(new UMImage(this, "http://www.haowuyun.com/pics/haowuicon.png"));
+        imagelocal = new UMImage(this,"http://www.haowuyun.com/pics/haowuicon.png");
+        imagelocal.setThumb(new UMImage(this, "http://www.haowuyun.com/pics/haowuicon.png"));
 
         music = new UMusic(Defaultcontent.musicurl);
         video = new UMVideo(Defaultcontent.videourl);
         music.setTitle("This is music title");
-        music.setThumb(new UMImage(this, "http://www.haowuyun.com/assets/images/haowuicon.png"));
+        music.setThumb(new UMImage(this, "http://www.haowuyun.com/pics/haowuicon.png"));
         music.setDescription("my description");
         //init video
-        video.setThumb(new UMImage(this,"http://www.haowuyun.com/assets/images/haowuicon.png"));
+        video.setThumb(new UMImage(this,"http://www.haowuyun.com/pics/haowuicon.png"));
         video.setTitle("This is video title");
         video.setDescription("my description");
         emoji = new UMEmoji(this,"http://img5.imgtn.bdimg.com/it/u=2749190246,3857616763&fm=21&gp=0.jpg");
@@ -506,8 +506,11 @@ public class Splash extends AppCompatActivity
                     .setShareboardclickCallback(new ShareBoardlistener() {
                         @Override
                         public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
-                            if (share_media==SHARE_MEDIA.QZONE){
+                            if (share_media==SHARE_MEDIA.QZONE || share_media==SHARE_MEDIA.WEIXIN_CIRCLE){
                                 mShareAction.withMedia(imagelocal);
+                                if (share_media==SHARE_MEDIA.WEIXIN_CIRCLE){
+                                    mShareAction.withTitle(webView.getTitle());
+                                }
 
                             }
                             mShareAction.setPlatform(share_media);
