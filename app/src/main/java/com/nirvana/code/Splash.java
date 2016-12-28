@@ -3,10 +3,12 @@ package com.nirvana.code;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,10 +22,16 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nirvana.code.core.view.NVWebView;
 import com.nirvana.code.core.view.RoundProgressBar;
+import com.nirvana.code.model.Channel;
 import com.nirvana.code.model.Defaultcontent;
 import com.nirvana.code.model.StyleUtil;
 import com.nirvana.code.test.TestDefinedView;
@@ -47,6 +55,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Splash extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +74,8 @@ public class Splash extends AppCompatActivity
     private UMusic music;
     private UMEmoji emoji;
     private File file;
+    private GridView mGridView;
+    private List<Channel> channels;
     public ArrayList<SnsPlatform> platforms = new ArrayList<SnsPlatform>();
 
 
@@ -373,8 +384,106 @@ public class Splash extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        channels=new ArrayList<>(8);
+        Channel channel1=new Channel();
+        channel1.setId(1);
+        channel1.setName("首页");
+        channel1.setUrl("http://www.haowuyun.com");
+        channel1.setIconResourceId(R.drawable.ic_menu_camera);
+        channels.add(channel1);
+
+
+
+        Channel channel2=new Channel();
+        channel2.setId(2);
+        channel2.setName("走廊");
+        channel2.setUrl("http://www.haowuyun.com/gallery?g=2");
+        channel2.setIconResourceId(R.drawable.ic_menu_gallery);
+        channels.add(channel2);
+
+        Channel channel3=new Channel();
+        channel3.setId(3);
+        channel3.setName("视频");
+        channel3.setUrl("http://www.haowuyun.com/g/video");
+        channel3.setIconResourceId(R.drawable.ic_menu_slideshow);
+        channels.add(channel3);
+
+        Channel channel4=new Channel();
+        channel4.setId(4);
+        channel4.setName("问答");
+        channel4.setUrl("http://www.haowuyun.com/g/ask");
+        channel4.setIconResourceId(R.drawable.ic_menu_send);
+        channels.add(channel4);
+
+        Channel channel5=new Channel();
+        channel5.setId(5);
+        channel5.setName("亲子");
+        channel5.setUrl("http://www.haowuyun.com/tag/%E4%BA%B2%E5%AD%90/");
+        channel5.setIconResourceId(R.drawable.ic_menu_lover);
+        channels.add(channel5);
+
+        Channel channel6=new Channel();
+        channel6.setId(6);
+        channel6.setName("关于");
+        channel6.setUrl("http://www.haowuyun.com/about");
+        channel6.setIconResourceId(R.drawable.ic_menu_manage);
+        channels.add(channel6);
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View view=navigationView.getHeaderView(0);;
+        mGridView=(GridView) view.findViewById(R.id.common_channel);
+
+        mGridView.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return channels.size();
+            }
+
+            @Override
+            public Object getItem(int position) {
+                return channels.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView==null){
+                    convertView= LayoutInflater.from(Splash.this).inflate(R.layout.channel_item,null);
+                    Holder holder=new Holder();
+                    holder.icon=(ImageView) convertView.findViewById(R.id.channel_icon);
+                    holder.title=(TextView) convertView.findViewById(R.id.channel_title);
+                    convertView.setTag(holder);
+
+                }
+                Holder holder=(Holder) convertView.getTag();
+                Channel channel=(Channel) getItem(position);
+                holder.icon.setImageDrawable(getResources().getDrawable(channel.getIconResourceId()));
+                holder.title.setText(channel.getName());
+                return convertView;
+            }
+            class Holder{
+                TextView title;
+                ImageView icon;
+            }
+        });
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String url=channels.get(position).getUrl();
+                Intent intent=new Intent(Splash.this,WebViewActivity.class);
+                intent.putExtra("url",url);
+                startActivity(intent);
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
         initPlatforms();
         initStyles(SHARE_MEDIA.QZONE.toSnsPlatform().mPlatform);
         initMedia();
@@ -542,6 +651,8 @@ public class Splash extends AppCompatActivity
 //            Intent in=new Intent(this,HomeActivity.class);
 //            startActivity(in);
 //            return true;
+        }else if (id==R.id.action_refresh){
+            webView.reload();
         }
 
         return super.onOptionsItemSelected(item);
@@ -555,18 +666,6 @@ public class Splash extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id){
-            case R.id.nav_camera:
-                url="http://www.haowuyun.com";
-                break;
-            case R.id.nav_gallery:
-                url="http://www.haowuyun.com/gallery?g=2";
-                break;
-            case R.id.nav_slideshow:
-                url="http://www.haowuyun.com/g/video";
-                break;
-            case R.id.nav_manage:
-                url="http://www.haowuyun.com/about";
-                break;
             case R.id.nav_android:
                 url="http://www.haowuyun.com/tag/Android/";
                 break;
@@ -576,14 +675,8 @@ public class Splash extends AppCompatActivity
             case R.id.nav_js:
                 url="http://www.haowuyun.com/tag/JavaScript/";
                 break;
-            case R.id.nav_ask:
-                url="http://www.haowuyun.com/g/ask";
-                break;
             case R.id.nav_h5:
                 url="http://www.haowuyun.com/tag/Html5/";
-                break;
-            case R.id.nav_lover:
-                url="http://www.haowuyun.com/tag/%E4%BA%B2%E5%AD%90/";
                 break;
         }
 

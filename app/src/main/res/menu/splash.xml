@@ -6,5 +6,11 @@
         android:orderInCategory="100"
         android:icon="@mipmap/share_image"
         android:title="@string/action_settings"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="101"
+        android:icon="@mipmap/icowebview_refresh"
+        android:title="@string/action_refresh"
+        app:showAsAction="collapseActionView" />
 </menu>

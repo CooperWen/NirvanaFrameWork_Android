@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * Created by kriszhang on 16/7/6.
  */
-public class NivanaApplication extends Application implements Thread.UncaughtExceptionHandler {
+public class NivanaApplication extends Application {
     private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
     @Override
     protected void attachBaseContext(Context base) {
@@ -44,38 +44,36 @@ public class NivanaApplication extends Application implements Thread.UncaughtExc
 
     }
 
-    @Override
-    public void uncaughtException(Thread thread, Throwable ex) {
-        // TODO Auto-generated method stub
-        PrintStream printStream = null;
-        try {
-            FileUtils fileUtils = new FileUtils(this);
-            File dir = fileUtils.getDir("error");
-            File file = new File(dir, "error.txt");
-
-            FileOutputStream outputStream = new FileOutputStream(file, true);
-            printStream = new PrintStream(outputStream, false);
-            printStream.append(new Date().toString());
-            printStream.append("\n");
-            ex.printStackTrace(printStream);
-            printStream.flush();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            if (printStream != null) {
-                printStream.close();
-                printStream = null;
-            }
-        }
-
-    }
+//    @Override
+//    public void uncaughtException(Thread thread, Throwable ex) {
+//        // TODO Auto-generated method stub
+//        PrintStream printStream = null;
+//        try {
+//            FileUtils fileUtils = new FileUtils(this);
+//            File dir = fileUtils.getDir("error");
+//            File file = new File(dir, "error.txt");
+//
+//            FileOutputStream outputStream = new FileOutputStream(file, true);
+//            printStream = new PrintStream(outputStream, false);
+//            printStream.append(new Date().toString());
+//            printStream.append("\n");
+//            ex.printStackTrace(printStream);
+//            printStream.flush();
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } finally {
+//            if (printStream != null) {
+//                printStream.close();
+//                printStream = null;
+//            }
+//        }
+//
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(this);
         MultiDex.install(this);
         Config.DEBUG = true;
         UMShareAPI.get(this);
