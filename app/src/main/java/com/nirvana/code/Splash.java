@@ -477,9 +477,10 @@ public class Splash extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String url=channels.get(position).getUrl();
-                Intent intent=new Intent(Splash.this,WebViewActivity.class);
-                intent.putExtra("url",url);
-                startActivity(intent);
+//                Intent intent=new Intent(Splash.this,WebViewActivity.class);
+//                intent.putExtra("url",url);
+//                startActivity(intent);
+                webView.loadUrl(url);
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
@@ -653,6 +654,10 @@ public class Splash extends AppCompatActivity
 //            return true;
         }else if (id==R.id.action_refresh){
             webView.reload();
+        }else if (id==R.id.action_login){
+            webView.loadUrl("http://www.haowuyun.com/login");
+        }else if (id==R.id.action_sign){
+            webView.loadUrl("http://www.haowuyun.com/reg");
         }
 
         return super.onOptionsItemSelected(item);
@@ -680,9 +685,10 @@ public class Splash extends AppCompatActivity
                 break;
         }
 
-        Intent intent=new Intent(Splash.this,WebViewActivity.class);
-        intent.putExtra("url",url);
-        startActivity(intent);
+//        Intent intent=new Intent(Splash.this,WebViewActivity.class);
+//        intent.putExtra("url",url);
+//        startActivity(intent);
+        webView.loadUrl(url);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

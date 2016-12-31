@@ -14,19 +14,19 @@ public class NVWebView extends WebView implements VerticalLinearLayout.OnPageCha
     public NVWebView(Context context) {
         super(context);
         String ua = this.getSettings().getUserAgentString();
-        this.getSettings().setUserAgentString(ua+"; Android");
+        this.getSettings().setUserAgentString(ua+"; Android;AppInstalled==1");
     }
 
     public NVWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         String ua = this.getSettings().getUserAgentString();
-        this.getSettings().setUserAgentString(ua+"; Android");
+        this.getSettings().setUserAgentString(ua+"; Android;AppInstalled==1");
     }
 
     public NVWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         String ua = this.getSettings().getUserAgentString();
-        this.getSettings().setUserAgentString(ua+"; Android");
+        this.getSettings().setUserAgentString(ua+"; Android;AppInstalled==1");
     }
 
     @Override

@@ -13,4 +13,16 @@
         android:icon="@mipmap/icowebview_refresh"
         android:title="@string/action_refresh"
         app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_login"
+        android:orderInCategory="102"
+        android:icon="@mipmap/icowebview_refresh"
+        android:title="@string/action_login"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_sign"
+        android:orderInCategory="103"
+        android:icon="@mipmap/icowebview_refresh"
+        android:title="@string/action_sign"
+        app:showAsAction="collapseActionView" />
 </menu>
