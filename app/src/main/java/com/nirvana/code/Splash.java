@@ -2,6 +2,7 @@ package com.nirvana.code;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
@@ -319,18 +321,23 @@ public class Splash extends AppCompatActivity
 
     }
     private void initMedia(){
-        imageurl = new UMImage(this,Defaultcontent.imageurl);
-        imageurl.setThumb(new UMImage(this, "http://www.haowuyun.com/pics/haowuicon.png"));
-        imagelocal = new UMImage(this,"http://www.haowuyun.com/pics/haowuicon.png");
-        imagelocal.setThumb(new UMImage(this, "http://www.haowuyun.com/pics/haowuicon.png"));
+        String  picurl=firstPicUrl;
+        Log.e("Splash","firstPicUrl1="+firstPicUrl);
+        if (TextUtils.isEmpty(picurl)){
+            picurl="http://www.haowuyun.com/pics/haowuicon.png";
+        }
+        imageurl = new UMImage(this,picurl);
+        imageurl.setThumb(new UMImage(this, picurl));
+        imagelocal = new UMImage(this,picurl);
+        imagelocal.setThumb(new UMImage(this, picurl));
 
         music = new UMusic(Defaultcontent.musicurl);
         video = new UMVideo(Defaultcontent.videourl);
         music.setTitle("This is music title");
-        music.setThumb(new UMImage(this, "http://www.haowuyun.com/pics/haowuicon.png"));
+        music.setThumb(new UMImage(this, picurl));
         music.setDescription("my description");
         //init video
-        video.setThumb(new UMImage(this,"http://www.haowuyun.com/pics/haowuicon.png"));
+        video.setThumb(new UMImage(this,picurl));
         video.setTitle("This is video title");
         video.setDescription("my description");
         emoji = new UMEmoji(this,"http://img5.imgtn.bdimg.com/it/u=2749190246,3857616763&fm=21&gp=0.jpg");
@@ -487,7 +494,7 @@ public class Splash extends AppCompatActivity
         });
         initPlatforms();
         initStyles(SHARE_MEDIA.QZONE.toSnsPlatform().mPlatform);
-        initMedia();
+
         mShareListener = new CustomShareListener(this);
 //        mShareAction = new ShareAction(this).setDisplayList(
 //                SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
@@ -507,6 +514,7 @@ public class Splash extends AppCompatActivity
         initView();
     }
 
+    private String firstPicUrl="";
     public void initView(){
         webView=(NVWebView) findViewById(R.id.webview);
         mRootView=(ViewGroup) findViewById(R.id.root_view);
@@ -556,6 +564,32 @@ public class Splash extends AppCompatActivity
                 }
             }
 
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view,
+                                                              String url) {
+                // TODO Auto-generated method stub
+                Log.e("Splash","url="+url);
+                if (url == null || url.startsWith("http://")
+                        || url.startsWith("https://")) {
+                    if (url.startsWith("http://www.haowuyun.com/store/orig/") && (url.endsWith(".png") || url.endsWith(".jpg"))){
+                        firstPicUrl=url;
+                        Log.e("Splash","firstPicUrl="+firstPicUrl);
+                    }
+                    return super.shouldInterceptRequest(view, url);
+                } else {
+                    try {
+                        // 不支持的跳转协议调用外部组件处理
+                        Intent in = new Intent(Intent.ACTION_VIEW, Uri
+                                .parse(url));
+                        startActivity(in);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            }
+
 
         });
 
@@ -593,6 +627,8 @@ public class Splash extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        initMedia();
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
