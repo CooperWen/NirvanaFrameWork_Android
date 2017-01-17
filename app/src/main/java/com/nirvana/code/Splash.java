@@ -668,15 +668,16 @@ public class Splash extends AppCompatActivity
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                mSearchText = query ;
+                if (!TextUtils.isEmpty(mSearchText)){
+                    doSearch(mSearchText,mUrl);
+                }
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mSearchText = newText ;
-                if (!TextUtils.isEmpty(mSearchText)){
-                    doSearch(mSearchText,mUrl);
-                }
+
                 return true;
             }
         });
