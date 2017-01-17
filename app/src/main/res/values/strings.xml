@@ -7,6 +7,7 @@
     <string name="action_settings">分享</string>
     <string name="action_refresh">刷新</string>
     <string name="action_login">登录</string>
+    <string name="action_close">关闭</string>
     <string name="action_sign">注册</string>
     <string name="facebook_app_id">1266254913438718</string>
 

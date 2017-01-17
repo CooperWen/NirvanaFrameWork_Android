@@ -5,4 +5,5 @@ package com.nirvana.code.core.utils.config;
  */
 public class BasicConfig {
     public static boolean isDebug=true;
+    public static final String searchUrl="http://www.haowuyun.com/browse/search?q=";
 }

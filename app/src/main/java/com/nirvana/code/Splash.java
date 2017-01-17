@@ -2,11 +2,15 @@ package com.nirvana.code;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,12 +35,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.nirvana.code.core.utils.config.BasicConfig;
+import com.nirvana.code.core.utils.log.NVLog;
 import com.nirvana.code.core.view.NVWebView;
 import com.nirvana.code.core.view.RoundProgressBar;
 import com.nirvana.code.model.Channel;
 import com.nirvana.code.model.Defaultcontent;
+import com.nirvana.code.model.MenuPopBean;
 import com.nirvana.code.model.StyleUtil;
 import com.nirvana.code.test.TestDefinedView;
+import com.nirvana.code.widgets.PopMenuView;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
@@ -79,6 +92,8 @@ public class Splash extends AppCompatActivity
     private GridView mGridView;
     private List<Channel> channels;
     public ArrayList<SnsPlatform> platforms = new ArrayList<SnsPlatform>();
+    private SearchView mSearchView;
+    private String mSearchText;
 
 
     private void initPlatforms(){
@@ -519,6 +534,9 @@ public class Splash extends AppCompatActivity
         webView=(NVWebView) findViewById(R.id.webview);
         mRootView=(ViewGroup) findViewById(R.id.root_view);
         webView.getSettings().setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.setWebContentsDebuggingEnabled(true);
+        }
         webView.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -552,6 +570,14 @@ public class Splash extends AppCompatActivity
             }
 
             @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (!TextUtils.isEmpty(mUrl) && !mUrl.equals(url)){
+                    firstPicUrl="";
+                }
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 //                int webviewContentHeight=webView.getContentHeight();
@@ -571,7 +597,7 @@ public class Splash extends AppCompatActivity
                 Log.e("Splash","url="+url);
                 if (url == null || url.startsWith("http://")
                         || url.startsWith("https://")) {
-                    if (url.startsWith("http://www.haowuyun.com/store/orig/") && (url.endsWith(".png") || url.endsWith(".jpg"))){
+                    if (url.startsWith("http://www.haowuyun.com/store/orig/") && (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".JPEG"))){
                         firstPicUrl=url;
                         Log.e("Splash","firstPicUrl="+firstPicUrl);
                     }
@@ -605,6 +631,24 @@ public class Splash extends AppCompatActivity
 
     }
 
+    public void doSearch(final String searchText,final String historUrl){
+        StringRequest stringRequest = new StringRequest(BasicConfig.searchUrl+searchText,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        webView.loadDataWithBaseURL("http://www.haowuyun.com/",response,"text/html","utf-8","http://www.haowuyun.com");
+//                        webView.loadData(response,"text/html","utf-8");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                NVLog.e("TAG", error.getMessage(), error);
+            }
+        });
+        RequestQueue mQueue = Volley.newRequestQueue(this);
+        mQueue.add(stringRequest);
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -619,6 +663,24 @@ public class Splash extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.splash, menu);
+        final MenuItem item = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(item);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mSearchText = newText ;
+                if (!TextUtils.isEmpty(mSearchText)){
+                    doSearch(mSearchText,mUrl);
+                }
+                return true;
+            }
+        });
+//        initMenuPop();
         return true;
     }
 
@@ -694,6 +756,8 @@ public class Splash extends AppCompatActivity
             webView.loadUrl("http://www.haowuyun.com/login");
         }else if (id==R.id.action_sign){
             webView.loadUrl("http://www.haowuyun.com/reg");
+        }else if (id==R.id.action_close){
+           webView.loadUrl("http://www.haowuyun.com/");;
         }
 
         return super.onOptionsItemSelected(item);
@@ -841,4 +905,25 @@ public class Splash extends AppCompatActivity
         }
     }
 
+    public void initMenuPop(){
+        int[] icons = {R.mipmap.icowebview_refresh, R.drawable.btn_close_v5};
+        String[] texts = {"编辑", "删除"};
+        List<MenuPopBean> list = new ArrayList<>();
+        MenuPopBean bean = null;
+        for (int i = 0; i < icons.length; i++) {
+            bean = new MenuPopBean();
+            bean.setIcon(icons[i]);
+            bean.setText(texts[i]);
+            list.add(bean);
+        }
+        PopMenuView pw = new PopMenuView(Splash.this, list);
+        pw.setOnItemClick(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        pw.showPopupWindow(findViewById(R.id.drawer_layout));//点击右上角的那个button
+
+    }
 }
