@@ -516,20 +516,6 @@ public class Splash extends AppCompatActivity
         initStyles(SHARE_MEDIA.QZONE.toSnsPlatform().mPlatform);
 
         mShareListener = new CustomShareListener(this);
-//        mShareAction = new ShareAction(this).setDisplayList(
-//                SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
-//                SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE,
-//                SHARE_MEDIA.ALIPAY, SHARE_MEDIA.RENREN, SHARE_MEDIA.DOUBAN,
-//                SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL, SHARE_MEDIA.YNOTE,
-//                SHARE_MEDIA.EVERNOTE, SHARE_MEDIA.LAIWANG, SHARE_MEDIA.LAIWANG_DYNAMIC,
-//                SHARE_MEDIA.LINKEDIN, SHARE_MEDIA.YIXIN, SHARE_MEDIA.YIXIN_CIRCLE,
-//                SHARE_MEDIA.TENCENT, SHARE_MEDIA.FACEBOOK, SHARE_MEDIA.TWITTER,
-//                SHARE_MEDIA.WHATSAPP, SHARE_MEDIA.GOOGLEPLUS, SHARE_MEDIA.LINE,
-//                SHARE_MEDIA.INSTAGRAM, SHARE_MEDIA.KAKAO, SHARE_MEDIA.PINTEREST,
-//                SHARE_MEDIA.POCKET, SHARE_MEDIA.TUMBLR, SHARE_MEDIA.FLICKR,
-//                SHARE_MEDIA.FOURSQUARE, SHARE_MEDIA.MORE)
-//                .withText(Defaultcontent.text )
-//                .setCallback(mShareListener);
 
         initView();
     }
@@ -604,7 +590,7 @@ public class Splash extends AppCompatActivity
                 Log.e("Splash","url="+url);
                 if (url == null || url.startsWith("http://")
                         || url.startsWith("https://")) {
-                    if (url.startsWith("http://www.haowuyun.com/store/") && (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".JPEG"))){
+                    if ((url.startsWith("http://www.haowuyun.com/store/orig/") ||url.startsWith("http://www.haowuyun.com/store/thumbs/")) && (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".JPEG"))){
                         firstPicUrl=url;
                         Log.e("Splash","firstPicUrl="+firstPicUrl);
                     }
@@ -734,24 +720,6 @@ public class Splash extends AppCompatActivity
                         }
                     })
                     .setCallback(mShareListener);
-//            mShareAction=new ShareAction(this).setDisplayList(
-//                    SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
-//                    SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE,
-//                    SHARE_MEDIA.ALIPAY, SHARE_MEDIA.RENREN, SHARE_MEDIA.DOUBAN,
-//                    SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL, SHARE_MEDIA.YNOTE,
-//                    SHARE_MEDIA.EVERNOTE, SHARE_MEDIA.LAIWANG, SHARE_MEDIA.LAIWANG_DYNAMIC,
-//                    SHARE_MEDIA.LINKEDIN, SHARE_MEDIA.YIXIN, SHARE_MEDIA.YIXIN_CIRCLE,
-//                    SHARE_MEDIA.TENCENT, SHARE_MEDIA.FACEBOOK, SHARE_MEDIA.TWITTER,
-//                    SHARE_MEDIA.WHATSAPP, SHARE_MEDIA.GOOGLEPLUS, SHARE_MEDIA.LINE,
-//                    SHARE_MEDIA.INSTAGRAM, SHARE_MEDIA.KAKAO, SHARE_MEDIA.PINTEREST,
-//                    SHARE_MEDIA.POCKET, SHARE_MEDIA.TUMBLR, SHARE_MEDIA.FLICKR,
-//                    SHARE_MEDIA.FOURSQUARE, SHARE_MEDIA.MORE)
-//                    .withText(webView.getTitle())
-//                    .withMedia(imagelocal)
-//                    .withTargetUrl(webView.getOriginalUrl())
-//                    .withTitle("LoveInLog分享")
-//                    .setPlatform(share_media)
-//                    .setCallback(mShareListener);
             ShareBoardConfig config = new ShareBoardConfig();
             config.setMenuItemBackgroundShape(ShareBoardConfig.BG_SHAPE_NONE);
             mShareAction.open(config);
@@ -765,7 +733,7 @@ public class Splash extends AppCompatActivity
         }else if (id==R.id.action_sign){
             webView.loadUrl("http://www.haowuyun.com/reg");
         }else if (id==R.id.action_close){
-           webView.loadUrl("http://www.haowuyun.com/");;
+           webView.loadUrl("http://www.haowuyun.com/");
         }
 
         return super.onOptionsItemSelected(item);
