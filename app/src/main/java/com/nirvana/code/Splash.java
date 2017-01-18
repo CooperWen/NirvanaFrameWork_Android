@@ -94,6 +94,7 @@ public class Splash extends AppCompatActivity
     public ArrayList<SnsPlatform> platforms = new ArrayList<SnsPlatform>();
     private SearchView mSearchView;
     private String mSearchText;
+    private Toolbar toolbar;
 
 
     private void initPlatforms(){
@@ -387,7 +388,8 @@ public class Splash extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("首页");
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -498,11 +500,14 @@ public class Splash extends AppCompatActivity
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url=channels.get(position).getUrl();
+                Channel channel=channels.get(position);
+                String channelName=channel.getName();
+                String url=channel.getUrl();
 //                Intent intent=new Intent(Splash.this,WebViewActivity.class);
 //                intent.putExtra("url",url);
 //                startActivity(intent);
                 webView.loadUrl(url);
+                toolbar.setTitle(channelName);
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
@@ -535,7 +540,9 @@ public class Splash extends AppCompatActivity
         mRootView=(ViewGroup) findViewById(R.id.root_view);
         webView.getSettings().setJavaScriptEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.setWebContentsDebuggingEnabled(true);
+            if (BuildConfig.DEBUG) {
+                webView.setWebContentsDebuggingEnabled(true);
+            }
         }
         webView.setWebChromeClient(new WebChromeClient(){
             @Override
@@ -597,7 +604,7 @@ public class Splash extends AppCompatActivity
                 Log.e("Splash","url="+url);
                 if (url == null || url.startsWith("http://")
                         || url.startsWith("https://")) {
-                    if (url.startsWith("http://www.haowuyun.com/store/orig/") && (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".JPEG"))){
+                    if (url.startsWith("http://www.haowuyun.com/store/") && (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".JPEG"))){
                         firstPicUrl=url;
                         Log.e("Splash","firstPicUrl="+firstPicUrl);
                     }
@@ -632,21 +639,23 @@ public class Splash extends AppCompatActivity
     }
 
     public void doSearch(final String searchText,final String historUrl){
-        StringRequest stringRequest = new StringRequest(BasicConfig.searchUrl+searchText,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        webView.loadDataWithBaseURL("http://www.haowuyun.com/",response,"text/html","utf-8","http://www.haowuyun.com");
-//                        webView.loadData(response,"text/html","utf-8");
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                NVLog.e("TAG", error.getMessage(), error);
-            }
-        });
-        RequestQueue mQueue = Volley.newRequestQueue(this);
-        mQueue.add(stringRequest);
+//        StringRequest stringRequest = new StringRequest(BasicConfig.searchUrl+searchText,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        webView.loadDataWithBaseURL("http://www.haowuyun.com/",response,"text/html","utf-8","http://www.haowuyun.com");
+//                        toolbar.setTitle("首页");
+////                        webView.loadData(response,"text/html","utf-8");
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                NVLog.e("TAG", error.getMessage(), error);
+//            }
+//        });
+//        RequestQueue mQueue = Volley.newRequestQueue(this);
+//        mQueue.add(stringRequest);
+        webView.loadUrl(BasicConfig.searchUrl+searchText);
     }
 
     @Override
@@ -700,15 +709,13 @@ public class Splash extends AppCompatActivity
             mShareAction = new ShareAction(this).setDisplayList(
                     SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
                     SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE,
-                    SHARE_MEDIA.ALIPAY, SHARE_MEDIA.RENREN, SHARE_MEDIA.DOUBAN,
-                    SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL, SHARE_MEDIA.YNOTE,
-                    SHARE_MEDIA.EVERNOTE, SHARE_MEDIA.LAIWANG, SHARE_MEDIA.LAIWANG_DYNAMIC,
-                    SHARE_MEDIA.LINKEDIN, SHARE_MEDIA.YIXIN, SHARE_MEDIA.YIXIN_CIRCLE,
-                    SHARE_MEDIA.TENCENT, SHARE_MEDIA.FACEBOOK, SHARE_MEDIA.TWITTER,
-                    SHARE_MEDIA.WHATSAPP, SHARE_MEDIA.GOOGLEPLUS, SHARE_MEDIA.LINE,
-                    SHARE_MEDIA.INSTAGRAM, SHARE_MEDIA.KAKAO, SHARE_MEDIA.PINTEREST,
-                    SHARE_MEDIA.POCKET, SHARE_MEDIA.TUMBLR, SHARE_MEDIA.FLICKR,
-                    SHARE_MEDIA.FOURSQUARE, SHARE_MEDIA.MORE)
+                    SHARE_MEDIA.ALIPAY,
+                    SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL,
+
+                    SHARE_MEDIA.TENCENT,
+
+
+                    SHARE_MEDIA.MORE)
                     .withText(webView.getTitle())
                     .withTitle("LoveInLog分享")
                     .withTargetUrl(webView.getOriginalUrl())
@@ -769,19 +776,25 @@ public class Splash extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         String url="";
+        String channelName="";
+
         int id = item.getItemId();
 
         switch (id){
             case R.id.nav_android:
+                channelName="Android";
                 url="http://www.haowuyun.com/tag/Android/";
                 break;
             case R.id.nav_java:
+                channelName="java";
                 url="http://www.haowuyun.com/tag/java/";
                 break;
             case R.id.nav_js:
+                channelName="JavaScript";
                 url="http://www.haowuyun.com/tag/JavaScript/";
                 break;
             case R.id.nav_h5:
+                channelName="Html5";
                 url="http://www.haowuyun.com/tag/Html5/";
                 break;
         }
@@ -790,6 +803,7 @@ public class Splash extends AppCompatActivity
 //        intent.putExtra("url",url);
 //        startActivity(intent);
         webView.loadUrl(url);
+        toolbar.setTitle(channelName);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
