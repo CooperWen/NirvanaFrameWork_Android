@@ -12,6 +12,14 @@
         android:background="@color/colorPrimary"
         nf:pv_host_text="LoveIn"
         nf:pv_particle_text="Log" />
+<FrameLayout
 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/splash_ad"
+        android:layout_width="200dp"
+        android:layout_height="200dp" />
+</FrameLayout>
 
 </RelativeLayout>

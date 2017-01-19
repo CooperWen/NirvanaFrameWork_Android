@@ -47,6 +47,7 @@ public class WebViewActivity extends Activity {
         webView=(NVWebView) findViewById(R.id.webview);
         mRootView=(ViewGroup) findViewById(R.id.root_view);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
         webView.loadUrl(url);
         webView.setLongClickable(false);
         webView.setWebViewClient(new WebViewClient(){
