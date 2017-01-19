@@ -32,7 +32,9 @@ public class NivanaApplication extends Application {
         //微信 wx12342956d1cab4f9,a5ae111de7d9ea137e88a5e02c07c94d
         //豆瓣RENREN平台目前只能在服务器端配置
         //新浪微博
+
         PlatformConfig.setSinaWeibo("3752428046", "7685545ee029aee1501a9c9609f31e67");
+        Config.REDIRECT_URL = "http://sns.whalecloud.com/sina2/callback";
         //易信
         PlatformConfig.setYixin("yxc0614e80c9304c11b0391514d09f13bf");
         PlatformConfig.setTwitter("3aIN7fuF685MuZ7jtXkQxalyi", "MK6FEYG63eWcpDFgRYw4w9puJhzDl0tyuqWjZ3M7XJuuG7mMbO");
