@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,20 +38,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.nirvana.code.core.utils.config.BasicConfig;
-import com.nirvana.code.core.utils.log.NVLog;
 import com.nirvana.code.core.view.NVWebView;
 import com.nirvana.code.core.view.RoundProgressBar;
 import com.nirvana.code.model.Channel;
 import com.nirvana.code.model.Defaultcontent;
 import com.nirvana.code.model.MenuPopBean;
 import com.nirvana.code.model.StyleUtil;
-import com.nirvana.code.test.TestDefinedView;
+import com.nirvana.code.task.KCTaskExecutor;
 import com.nirvana.code.widgets.PopMenuView;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -405,9 +402,37 @@ public class Splash extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View view=navigationView.getHeaderView(0);;
+        mGridView=(GridView) view.findViewById(R.id.common_channel);
+
+        KCTaskExecutor.executeTask(new Runnable() {
+            @Override
+            public void run() {
+                initMenuView();
+                initPlatforms();
+                initStyles(SHARE_MEDIA.QZONE.toSnsPlatform().mPlatform);
+                mShareListener = new CustomShareListener(Splash.this);
+            }
+        });
+
+
+
+
+
+        initView();
+    }
+
+    public void initMenuView(){
         channels=new ArrayList<>(8);
         Channel channel1=new Channel();
         channel1.setId(1);
@@ -454,11 +479,6 @@ public class Splash extends AppCompatActivity
         channels.add(channel6);
 
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        View view=navigationView.getHeaderView(0);;
-        mGridView=(GridView) view.findViewById(R.id.common_channel);
 
         mGridView.setAdapter(new BaseAdapter() {
             @Override
@@ -512,24 +532,13 @@ public class Splash extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             }
         });
-        initPlatforms();
-        initStyles(SHARE_MEDIA.QZONE.toSnsPlatform().mPlatform);
-
-        mShareListener = new CustomShareListener(this);
-
-        initView();
     }
-
     private String firstPicUrl="";
     public void initView(){
         webView=(NVWebView) findViewById(R.id.webview);
         mRootView=(ViewGroup) findViewById(R.id.root_view);
-        webView.getSettings().setJavaScriptEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (BuildConfig.DEBUG) {
-                webView.setWebContentsDebuggingEnabled(true);
-            }
-        }
+
+        webView.initWebview();
         webView.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -551,7 +560,6 @@ public class Splash extends AppCompatActivity
             }
         });
         webView.loadUrl("http:/www.haowuyun.com/index");
-        webView.setLongClickable(false);
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -571,6 +579,11 @@ public class Splash extends AppCompatActivity
             }
 
             @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
+            }
+
+            @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 //                int webviewContentHeight=webView.getContentHeight();
@@ -585,13 +598,13 @@ public class Splash extends AppCompatActivity
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view,
-                                                              String url) {
+                                                              WebResourceRequest url) {
                 // TODO Auto-generated method stub
-                Log.e("Splash","url="+url);
-                if (url == null || url.startsWith("http://")
-                        || url.startsWith("https://")) {
-                    if ((url.startsWith("http://www.haowuyun.com/store/orig/") ||url.startsWith("http://www.haowuyun.com/store/thumbs/")) && (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".jpeg") || url.endsWith(".JPEG"))){
-                        firstPicUrl=url;
+                Log.e("Splash","url="+url.toString());
+                if (url == null || url.toString().startsWith("http://")
+                        || url.toString().startsWith("https://")) {
+                    if ((url.toString().startsWith("http://www.haowuyun.com/store/orig/") ||url.toString().startsWith("http://www.haowuyun.com/store/thumbs/")) && (url.toString().endsWith(".png") || url.toString().endsWith(".jpg") || url.toString().endsWith(".jpeg") || url.toString().endsWith(".JPEG"))){
+                        firstPicUrl=url.toString();
                         Log.e("Splash","firstPicUrl="+firstPicUrl);
                     }
                     return super.shouldInterceptRequest(view, url);
@@ -599,7 +612,7 @@ public class Splash extends AppCompatActivity
                     try {
                         // 不支持的跳转协议调用外部组件处理
                         Intent in = new Intent(Intent.ACTION_VIEW, Uri
-                                .parse(url));
+                                .parse(url.toString()));
                         startActivity(in);
                     } catch (Exception e) {
                         // TODO: handle exception

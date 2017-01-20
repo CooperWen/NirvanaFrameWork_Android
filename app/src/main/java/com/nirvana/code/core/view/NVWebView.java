@@ -1,11 +1,18 @@
 package com.nirvana.code.core.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.webkit.DownloadListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import com.nirvana.code.BuildConfig;
 
 /**
  * Created by kriszhang on 16/6/3.
@@ -13,22 +20,71 @@ import android.widget.Toast;
 public class NVWebView extends WebView implements VerticalLinearLayout.OnPageChangeListener{
     public NVWebView(Context context) {
         super(context);
-        String ua = this.getSettings().getUserAgentString();
-        this.getSettings().setUserAgentString(ua+"; Android;AppInstalled==1");
+        initWebview();
     }
 
     public NVWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        String ua = this.getSettings().getUserAgentString();
-        this.getSettings().setUserAgentString(ua+"; Android;AppInstalled==1");
+        initWebview();
+
     }
 
     public NVWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        String ua = this.getSettings().getUserAgentString();
-        this.getSettings().setUserAgentString(ua+"; Android;AppInstalled==1");
+        initWebview();
+
     }
 
+    public class NVDownloadListener implements DownloadListener{
+
+        @Override
+        public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+            Uri uri=Uri.parse(url);
+            Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+            getContext().startActivity(intent);
+        }
+    }
+
+    /**
+     * 设置默认下载
+     * 下载主要有两种方式:
+     * 1.自定义下载
+     * 2.调用系统默认下载模块
+     */
+    public void setNVDownloadListener(){
+        setDownloadListener(new NVDownloadListener());
+    }
+
+    /**
+     * 初始化webview
+     */
+    public void initWebview(){
+        WebSettings settings=this.getSettings();
+        String ua = settings.getUserAgentString();
+        settings.setUserAgentString(ua+"; Android;AppInstalled==1");
+        settings.setJavaScriptEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);//根据cache-control决定是否从网络上取数据
+        settings.setDomStorageEnabled(true);
+        settings.setUseWideViewPort(false);//将图片调整到适合webview的大小
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);//支持内容重新布局
+        settings.setAllowFileAccess(true);//设置可以访问文件
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);//支持通过JS打开新窗口
+        settings.setLoadWithOverviewMode(true);//缩放至屏幕的大小
+        if (Build.VERSION.SDK_INT >= 19){
+            settings.setLoadsImagesAutomatically(true);
+        }else {
+            settings.setLoadsImagesAutomatically(false);
+        }
+        setLongClickable(false);
+        settings.setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (BuildConfig.DEBUG) {
+                setWebContentsDebuggingEnabled(true);
+            }
+        }
+        setNVDownloadListener();
+
+    }
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
 //        if (getContentHeight()>400){
