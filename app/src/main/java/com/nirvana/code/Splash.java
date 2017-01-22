@@ -598,11 +598,11 @@ public class Splash extends AppCompatActivity
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view,
-                                                              WebResourceRequest url) {
+                                                              String url) {
                 // TODO Auto-generated method stub
                 Log.e("Splash","url="+url.toString());
-                if (url == null || url.toString().startsWith("http://")
-                        || url.toString().startsWith("https://")) {
+                if (url != null && (url.toString().startsWith("http://")
+                        || url.toString().startsWith("https://"))) {
                     if ((url.toString().startsWith("http://www.haowuyun.com/store/orig/") ||url.toString().startsWith("http://www.haowuyun.com/store/thumbs/")) && (url.toString().endsWith(".png") || url.toString().endsWith(".jpg") || url.toString().endsWith(".jpeg") || url.toString().endsWith(".JPEG"))){
                         firstPicUrl=url.toString();
                         Log.e("Splash","firstPicUrl="+firstPicUrl);
@@ -721,7 +721,7 @@ public class Splash extends AppCompatActivity
                     .setShareboardclickCallback(new ShareBoardlistener() {
                         @Override
                         public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
-                            if (share_media==SHARE_MEDIA.QZONE || share_media==SHARE_MEDIA.WEIXIN_CIRCLE){
+                            if (share_media==SHARE_MEDIA.QZONE || share_media==SHARE_MEDIA.WEIXIN_CIRCLE ||share_media==SHARE_MEDIA.SINA){
                                 mShareAction.withMedia(imagelocal);
                                 if (share_media==SHARE_MEDIA.WEIXIN_CIRCLE){
                                     mShareAction.withTitle(webView.getTitle());
@@ -747,6 +747,39 @@ public class Splash extends AppCompatActivity
             webView.loadUrl("http://www.haowuyun.com/reg");
         }else if (id==R.id.action_close){
            webView.loadUrl("http://www.haowuyun.com/");
+        }else if (id==R.id.nav_share_pic){
+            initMedia();
+            mShareAction = new ShareAction(this).setDisplayList(
+                    SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.WEIXIN_FAVORITE,
+                    SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE,
+                    SHARE_MEDIA.ALIPAY,
+                    SHARE_MEDIA.SMS, SHARE_MEDIA.EMAIL,
+
+                    SHARE_MEDIA.TENCENT,
+
+
+                    SHARE_MEDIA.MORE)
+                    .withText("#慢节奏# ☞LoveInLog分享")
+//                        .withTitle("LoveInLog分享")
+//                        .withTargetUrl(webView.getOriginalUrl())
+//                        .setShareboardclickCallback(new ShareBoardlistener() {
+//                            @Override
+//                            public void onclick(SnsPlatform snsPlatform, SHARE_MEDIA share_media) {
+//                                if (share_media==SHARE_MEDIA.QZONE || share_media==SHARE_MEDIA.WEIXIN_CIRCLE){
+//                                    mShareAction.withMedia(imagelocal);
+//                                    if (share_media==SHARE_MEDIA.WEIXIN_CIRCLE){
+//                                        mShareAction.withTitle(webView.getTitle());
+//                                    }
+//
+//                                }
+//                                mShareAction.setPlatform(share_media);
+//                                mShareAction.share();
+//                            }
+//                        })
+                    .setCallback(mShareListener);
+            ShareBoardConfig config = new ShareBoardConfig();
+            config.setMenuItemBackgroundShape(ShareBoardConfig.BG_SHAPE_NONE);
+            mShareAction.open(config);
         }
 
         return super.onOptionsItemSelected(item);
@@ -778,6 +811,7 @@ public class Splash extends AppCompatActivity
                 channelName="Html5";
                 url="http://www.haowuyun.com/tag/Html5/";
                 break;
+
         }
 
 //        Intent intent=new Intent(Splash.this,WebViewActivity.class);

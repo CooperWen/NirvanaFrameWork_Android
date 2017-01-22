@@ -38,4 +38,10 @@
         android:icon="@mipmap/icowebview_refresh"
         android:title="@string/action_sign"
         app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/nav_share_pic"
+        android:orderInCategory="103"
+        android:icon="@drawable/umeng_share_solid_icon"
+        app:showAsAction="collapseActionView"
+        android:title="分享图片" />
 </menu>
