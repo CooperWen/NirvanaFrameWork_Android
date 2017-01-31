@@ -35,8 +35,8 @@ public class ParticleView extends View {
     private final int ROW_NUM = 10;
     private final int COLUMN_NUM = 10;
 
-    private final int DEFAULT_MAX_TEXT_SIZE = sp2px(80);
-    private final int DEFAULT_MIN_TEXT_SIZE = sp2px(30);
+    private final int DEFAULT_MAX_TEXT_SIZE = sp2px(60);
+    private final int DEFAULT_MIN_TEXT_SIZE = sp2px(24);
 
     private Paint mHostTextPaint;
     private Paint mParticleTextPaint;
