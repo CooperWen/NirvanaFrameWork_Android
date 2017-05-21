@@ -73,6 +73,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.githang:status-bar-compat:0.5'
     //    compile files('libs/classes-dex2jar.jar')
     //    compile 'com.google.android:multidex:0.1'
 }

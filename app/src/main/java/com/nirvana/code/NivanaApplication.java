@@ -20,6 +20,7 @@ import java.util.Date;
  */
 public class NivanaApplication extends Application {
     private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
+    public static NivanaApplication mAPP;
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -78,6 +79,7 @@ public class NivanaApplication extends Application {
         super.onCreate();
         MultiDex.install(this);
         Config.DEBUG = true;
+        mAPP = this;
         UMShareAPI.get(this);
     }
 }

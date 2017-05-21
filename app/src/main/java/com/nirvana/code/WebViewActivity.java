@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -17,11 +18,13 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.githang.statusbar.StatusBarCompat;
+import com.nirvana.code.core.base.BaseActivity;
 import com.nirvana.code.core.view.NVWebView;
 import com.nirvana.code.core.view.RoundProgressBar;
 import com.umeng.socialize.utils.Log;
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends BaseActivity {
 
     private NVWebView webView;
     private ViewGroup mRootView;
@@ -31,6 +34,7 @@ public class WebViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.news_view);
+        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.backgoud3) );
         String url=getIntent().getStringExtra("url");
         if (TextUtils.isEmpty(url)){
             url="http:/www.haowuyun.com/index";

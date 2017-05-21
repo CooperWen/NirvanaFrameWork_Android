@@ -31,4 +31,8 @@
     <string name="umeng_choose_style">选择分享类型</string>
 
     <string name="umeng_sharebutton_custom">自定义分享按钮</string>
+
+    <string name="change_daynight">切换主题</string>
+    <string name="main_menu_changetheme_day">夜间模式</string>
+    <string name="main_menu_changetheme_night">日间模式</string>
 </resources>

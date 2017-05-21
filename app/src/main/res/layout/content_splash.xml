@@ -18,6 +18,8 @@
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:isScrollContainer="false"
+        android:scrollbars="vertical"
         />
     <com.nirvana.code.core.view.RoundProgressBar
         android:id="@+id/roundProgressBar"
