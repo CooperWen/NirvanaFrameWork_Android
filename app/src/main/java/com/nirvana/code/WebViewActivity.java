@@ -2,6 +2,7 @@ package com.nirvana.code;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -17,18 +18,27 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
 import com.githang.statusbar.StatusBarCompat;
 import com.nirvana.code.core.base.BaseActivity;
 import com.nirvana.code.core.view.NVWebView;
 import com.nirvana.code.core.view.RoundProgressBar;
+import com.nirvana.code.share.ShareCommon;
 import com.umeng.socialize.utils.Log;
 
-public class WebViewActivity extends BaseActivity {
+public class WebViewActivity extends BaseActivity implements View.OnClickListener{
 
     private NVWebView webView;
     private ViewGroup mRootView;
     private RoundProgressBar progressBar;
+    private ShareCommon shareCommon;
+    private String firstPicUrl;
+    private String mUrl;
+    private static final String TAG= "WebViewActivity";
+    private ImageView mShareImg;
+    private ImageView mBackImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +49,21 @@ public class WebViewActivity extends BaseActivity {
         if (TextUtils.isEmpty(url)){
             url="http:/www.haowuyun.com/index";
         }
+        initView(url);
+
+        shareCommon =new ShareCommon(this);
+
+
+    }
+
+    private void initView(final String url) {
+
         progressBar=(RoundProgressBar)findViewById(R.id.roundProgressBar);
         progressBar.setVisibility(View.VISIBLE);
+        mShareImg = (ImageView) findViewById(R.id.bottom_share_btn);
+        mShareImg.setOnClickListener(this);
+        mBackImg =(ImageView) findViewById(R.id.bottom_back_btn);
+        mBackImg.setOnClickListener(this);
         webView=(NVWebView) findViewById(R.id.webview);
         webView.initWebview();
         mRootView=(ViewGroup) findViewById(R.id.root_view);
@@ -56,11 +79,19 @@ public class WebViewActivity extends BaseActivity {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     finish();
                 }else {
+                    mUrl=url;
                     view.loadUrl(url);
                 }
                 return false;
             }
 
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (!TextUtils.isEmpty(mUrl) && !mUrl.equals(url)){
+                    firstPicUrl="";
+                }
+                super.onPageStarted(view, url, favicon);
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -76,16 +107,14 @@ public class WebViewActivity extends BaseActivity {
             }
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view,
-                                                              WebResourceRequest url) {
-                // TODO Auto-generated method stub
-                Log.e("Splash","url="+url.toString());
-                if (url != null && url.toString().startsWith("http://")
-                        || url.toString().startsWith("https://")) {
+                                                              String url) {
+                Log.d(TAG,"url="+url);
+                if (url != null && (url.startsWith("http://")
+                        || url.toString().startsWith("https://"))) {
                     if ((url.toString().startsWith("http://www.haowuyun.com/store/orig/") ||url.toString().startsWith("http://www.haowuyun.com/store/thumbs/")) && (url.toString().endsWith(".png") || url.toString().endsWith(".jpg") || url.toString().endsWith(".jpeg") || url.toString().endsWith(".JPEG"))){
-//                        firstPicUrl=url.toString();
-//                        Log.e("Splash","firstPicUrl="+firstPicUrl);
+                        firstPicUrl=url.toString();
+                        Log.e(TAG,"firstPicUrl="+firstPicUrl);
                     }
-                    return super.shouldInterceptRequest(view, url);
                 } else {
                     try {
                         // 不支持的跳转协议调用外部组件处理
@@ -93,11 +122,14 @@ public class WebViewActivity extends BaseActivity {
                                 .parse(url.toString()));
                         startActivity(in);
                     } catch (Exception e) {
-                        // TODO: handle exception
                         e.printStackTrace();
                     }
+
                     return null;
                 }
+
+                return super.shouldInterceptRequest(view, url);
+
             }
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
@@ -114,11 +146,7 @@ public class WebViewActivity extends BaseActivity {
                 }
             }
         });
-
-
     }
-
-
 
     @Override
     protected void onResume() {
@@ -130,7 +158,11 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode==KeyEvent.KEYCODE_BACK){
-            finish();
+            if (webView.canGoBack()){
+                webView.goBack();
+            }else {
+                finish();
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -148,5 +180,18 @@ public class WebViewActivity extends BaseActivity {
         mRootView.removeView(webView);
         webView.clearCache(true);
         webView.destroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id=v.getId();
+        switch (id){
+            case R.id.bottom_back_btn:
+                finish();
+                break;
+            case R.id.bottom_share_btn:
+                shareCommon.sharePicText(webView.getTitle(),webView.getOriginalUrl(),firstPicUrl);
+                break;
+        }
     }
 }
